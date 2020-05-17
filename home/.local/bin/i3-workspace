@@ -1,0 +1,16 @@
+#!/usr/bin/sh
+#
+# Dumb alias to execute a workspace command, given a workspace's position on
+# the current output monitor.
+#
+# Syntax: i3-workspace <command> <workspace position>
+#
+# Example: `i3-workspace workspace 2` will switch to the 2nd open workspace on
+# the current output.
+#
+# Example: `i3-workspace 'move container to workspace' 2` will move the
+# currently focused container to the 2nd open workspace on the current output.
+
+current_output=$(i3-msg -t get_workspaces | jq '.[] | select(.focused == true) | .output')
+workspace_name=$(i3-msg -t get_workspaces | jq "nth($(($2 - 1)); .[] | select(.output == ${current_output})) | .name")
+i3-msg "$1" "$workspace_name"

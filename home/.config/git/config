@@ -1,0 +1,9 @@
+[user]
+	email = germanosz@gmail.com
+	name = GermainZ
+[push]
+	default = matching
+[color]
+	ui = true
+[core]
+	compression = 9

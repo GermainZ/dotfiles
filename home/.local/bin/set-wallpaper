@@ -1,0 +1,7 @@
+#!/bin/sh
+# Set random wallpaper and make a symbolic link to it.
+# Allows us to use the current wallpaper as background in certain programs.
+
+WALLPAPER="$XDG_DATA_HOME"/wallpapers/"$((RANDOM%32+1))".png
+ln -sf $WALLPAPER "$XDG_DATA_HOME"/wallpapers/wallpaper.png
+hsetroot -center $WALLPAPER

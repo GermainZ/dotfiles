@@ -1,0 +1,41 @@
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile        ~/.cache/msmtp.log
+
+# germanosz@gmail.com
+account        germanosz@gmail.com
+host           smtp.gmail.com
+port           587
+from           germanosz@gmail.com
+user           germanosz
+passwordeval   "gpg -q --for-your-eyes-only --no-tty -d ~/.mail/germanosz-gmail-credentials.gpg"
+
+# germainzouein@gmail.com
+account        germainzouein@gmail.com
+host           smtp.gmail.com
+port           587
+from           germainzouein@gmail.com
+user           germainzouein
+passwordeval   "gpg -q --for-your-eyes-only --no-tty -d ~/.mail/germainzouein-gmail-credentials.gpg"
+
+# germain.zouein@lau.edu
+account        germainzouein@lau.edu
+host           smtp.office365.com
+port           587
+from           germain.zouein@lau.edu
+user           germain.zouein@lau.edu
+passwordeval   "gpg -q --for-your-eyes-only --no-tty -d ~/.mail/germainzouein-lau-credentials.gpg"
+
+# germain.zouein@epfl.ch
+account        germainzouein@epfl.ch
+host           mail.epfl.ch
+port           465
+tls_starttls   off
+from           germain.zouein@epfl.ch
+user           zouein
+passwordeval   "gpg -q --for-your-eyes-only --no-tty -d ~/.mail/germainzouein-epfl-credentials.gpg"
+
+# Set a default account
+account default : germainzouein@gmail.com

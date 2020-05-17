@@ -1,0 +1,51 @@
+Xft.autohint: 0
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintslight
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.rgba: rgb
+Xft.dpi: 120
+
+!! gruvbox
+*background: #1d2021
+*foreground: #ebdbb2
+! Black + DarkGrey
+*color0:  #282828
+*color8:  #928374
+! DarkRed + Red
+*color1:  #cc241d
+*color9:  #fb4934
+! DarkGreen + Green
+*color2:  #98971a
+*color10: #b8bb26
+! DarkYellow + Yellow
+*color3:  #d79921
+*color11: #fabd2f
+! DarkBlue + Blue
+*color4:  #458588
+*color12: #83a598
+! DarkMagenta + Magenta
+*color5:  #b16286
+*color13: #d3869b
+! DarkCyan + Cyan
+*color6:  #689d6a
+*color14: #8ec07c
+! LightGrey + White
+*color7:  #a89984
+*color15: #ebdbb2
+
+*termName: xterm-256color
+*saveLines: 4096
+*metaSendsEscape: true
+*faceName: monospace:size=10
+
+rofi.color-normal: #1d2021, #ebdbb2, #1d2021, #3c3836, #fbf1c7
+rofi.separator-style: none
+rofi.hide-scrollbar: true
+rofi.color-window: #1d2021, #606060
+rofi.font: monospace 10
+rofi.levenshtein-sort: true
+rofi.lines: 6
+rofi.fullscreen: true
+rofi.padding: 320
+rofi.bw: 0

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Launch rofi with a fade-in/fade-out effect, by enabling compton's
+# no_fading_openclose, launching rofi then disabling it again.
+# Dependencies: rofi, compton, dbus.
+
+dbus-send --print-reply --dest=com.github.chjj.compton.${DISPLAY/:/_} / \
+    com.github.chjj.compton.opts_set string:no_fading_openclose boolean:false \
+    > /dev/null
+
+/usr/bin/rofi "$@"
+sleep 0.2
+
+dbus-send --print-reply --dest=com.github.chjj.compton.${DISPLAY/:/_} / \
+    com.github.chjj.compton.opts_set string:no_fading_openclose boolean:true \
+    > /dev/null

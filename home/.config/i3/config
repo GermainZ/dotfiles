@@ -1,0 +1,293 @@
+# i3 config file (v4)
+#
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+
+# Variables
+# =========
+set $mod Mod4
+set $main 1:
+set $web 2:
+set $chat 3:
+set $media 4:
+set $code 5:
+set $mail 6:
+set $vm 7:
+set $steam 8:
+set $games 9:
+set $books 10:
+
+# General behavior
+# ================
+floating_modifier $mod
+focus_follows_mouse no
+workspace_auto_back_and_forth yes
+workspace_layout tabbed
+popup_during_fullscreen leave_fullscreen
+floating_maximum_size 1920 x 1080
+
+
+# Display
+# =======
+font pango:sans 10
+
+# Border styles
+# -------------
+default_border pixel 1
+default_floating_border pixel 1
+hide_edge_borders both
+
+# Colors
+# ------
+# class        border  bg      text    indicator
+client.focused #3c3836 #3c3836 #fbf1c7 #458588
+client.focused_inactive #1d2021 #1d2021 #ebdbb2 #3c3836
+client.unfocused #1d2021 #1d2021 #ebdbb2 #3c3836
+client.urgent #cc241d #cc241d #fbf1c7 #3c3836
+
+
+# Key bindings
+# ============
+
+# Containers and workspaces
+# -------------------------
+
+# General control
+# ...............
+bindsym $mod+Shift+Q kill
+bindsym $mod+Shift+F fullscreen
+bindsym $mod+Shift+space floating toggle
+bindsym button4 nop
+bindsym button5 nop
+
+# Splits
+# ......
+bindsym $mod+s split h
+bindsym $mod+v split v
+
+# Container layouts
+# .................
+bindsym $mod+Shift+S layout stacking
+bindsym $mod+Shift+W layout tabbed
+bindsym $mod+Shift+E layout toggle split
+
+# Focus control
+# .............
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+bindsym $mod+c focus child
+
+# Moving containers
+# .................
+bindsym $mod+Shift+H move left
+bindsym $mod+Shift+J move down
+bindsym $mod+Shift+K move up
+bindsym $mod+Shift+L move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+0 move container to workspace $main
+bindsym $mod+Shift+grave move container to workspace $main
+bindsym $mod+Shift+G move --no-auto-back-and-forth container to workspace $games
+bindsym $mod+Shift+M move --no-auto-back-and-forth container to workspace $media
+bindsym $mod+Shift+B move --no-auto-back-and-forth container to workspace $web
+bindsym $mod+Shift+1 exec --no-startup-id "i3-workspace 'move container to workspace' 1"
+bindsym $mod+Shift+2 exec --no-startup-id "i3-workspace 'move container to workspace' 2"
+bindsym $mod+Shift+3 exec --no-startup-id "i3-workspace 'move container to workspace' 3"
+bindsym $mod+Shift+4 exec --no-startup-id "i3-workspace 'move container to workspace' 4"
+bindsym $mod+Shift+5 exec --no-startup-id "i3-workspace 'move container to workspace' 5"
+bindsym $mod+Shift+6 exec --no-startup-id "i3-workspace 'move container to workspace' 6"
+bindsym $mod+Shift+7 exec --no-startup-id "i3-workspace 'move container to workspace' 7"
+bindsym $mod+Shift+8 exec --no-startup-id "i3-workspace 'move container to workspace' 8"
+bindsym $mod+Control+Up move container to output up
+bindsym $mod+Control+Down move container to output down
+bindsym $mod+Control+Shift+Up move workspace to output up
+bindsym $mod+Control+Shift+Down move workspace to output down
+
+# Workspaces switching
+# ....................
+bindsym $mod+0 workspace $main
+bindsym $mod+grave workspace $main
+bindsym $mod+1 exec --no-startup-id "i3-workspace workspace 1"
+bindsym $mod+2 exec --no-startup-id "i3-workspace workspace 2"
+bindsym $mod+3 exec --no-startup-id "i3-workspace workspace 3"
+bindsym $mod+4 exec --no-startup-id "i3-workspace workspace 4"
+bindsym $mod+5 exec --no-startup-id "i3-workspace workspace 5"
+bindsym $mod+6 exec --no-startup-id "i3-workspace workspace 6"
+bindsym $mod+7 exec --no-startup-id "i3-workspace workspace 7"
+bindsym $mod+8 exec --no-startup-id "i3-workspace workspace 8"
+bindsym $mod+Tab workspace back_and_forth
+
+# Resize mode
+# ...........
+mode "resize" {
+    bindsym h resize shrink width 10 px or 1 ppt
+    bindsym j resize grow height 10 px or 1 ppt
+    bindsym k resize shrink height 10 px or 1 ppt
+    bindsym l resize grow width 10 px or 1 ppt
+    bindsym Left resize shrink width 10 px or 1 ppt
+    bindsym Down resize grow height 10 px or 1 ppt
+    bindsym Up resize shrink height 10 px or 1 ppt
+    bindsym Right resize grow width 10 px or 1 ppt
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+# System mode
+# ...........
+set $mode_system System (l) lock, (s) suspend, (r) reboot, (p) poweroff, (e) exit session | (-) kill brightness, (+) restore brightness
+mode "$mode_system" {
+    bindsym XF86Tools exec --no-startup-id "lock", mode "default"
+    bindsym l exec --no-startup-id "lock", mode "default"
+    bindsym s exec --no-startup-id "systemctl suspend", mode "default"
+    bindsym r exec --no-startup-id "systemctl reboot", mode "default"
+    bindsym p exec --no-startup-id "systemctl poweroff", mode "default"
+    bindsym e exec --no-startup-id "i3-msg exit", mode "default"
+    bindsym minus exec --no-startup-id "light -O && light -S 0", mode "default"
+    bindsym equal exec --no-startup-id "light -I", mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym XF86Tools mode "$mode_system"
+
+# i3wm control
+# ------------
+bindsym $mod+Shift+C reload
+bindsym $mod+Shift+R restart
+bindsym $mod+Shift+X exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# Other
+# -----
+
+# Music/media
+# ...........
+bindsym XF86AudioRaiseVolume exec --no-startup-id "amixer set Master 5%+ && killall -USR1 py3status"
+bindsym XF86AudioLowerVolume exec --no-startup-id "amixer set Master 5%- && killall -USR1 py3status"
+bindsym XF86AudioMute exec --no-startup-id "amixer set Master toggle && killall -USR1 py3status"
+# bindsym XF86AudioPlay exec --no-startup-id "mpc toggle && killall -USR1 py3status"
+# bindsym $mod+comma exec --no-startup-id "mpc prev && killall -USR1 py3status"
+# bindsym $mod+period exec --no-startup-id "mpc next && killall -USR1 py3status"
+# bindsym $mod+slash exec --no-startup-id "mpc seek 0"
+# bindsym $mod+m exec --no-startup-id "mpc toggle && killall -USR1 py3status"
+# bindsym XF86KbdLightOnOff exec --no-startup-id "amixer set Master toggle && killall -USR1 py3status"
+
+# Scratchpad
+# ..........
+bindsym $mod+Shift+underscore move scratchpad
+bindsym $mod+minus scratchpad show
+
+# Screenshot
+# ..........
+bindsym Print exec cap
+bindsym Shift+Print exec --no-startup-id "maim --hidecursor ~/$(date +%F-%T).png"
+#
+# Brightness
+# ..........
+bindsym XF86MonBrightnessUp exec --no-startup-id "light -A 5 && killall -USR1 py3status"
+bindsym XF86MonBrightnessDown exec --no-startup-id "light -U 5 && killall -USR1 py3status"
+
+
+# Launching programs
+# ------------------
+bindsym $mod+Return exec kitty
+bindsym $mod+d exec rofi -modi drun -show drun
+bindsym $mod+w exec firefox
+bindsym $mod+g exec steam
+bindsym $mod+z exec idea.sh
+bindsym $mod+b exec android-studio
+bindsym $mod+f exec "kitty ranger"
+# bindsym $mod+i exec "kitty --class weechat kitty +kitten ssh germain@digitalocean './exec-weechat'"
+bindsym $mod+i exec "kitty --class weechat mosh germain@digitalocean './exec-weechat'"
+bindsym $mod+e exec "kitty --class neomutt neomutt"
+bindsym $mod+m exec "firefox --kiosk -new-instance -P jellyfin --class=jellyfin http://localhost:8096/"
+bindsym XF86Display exec --no-startup-id "killall picom || picom --dbus &"
+
+# KeepassX
+# ........
+# If KeepassX isn't started, start it and temporarily unbind all of i3's keys
+# so that KeepassX can register its own (alt+') successfully.
+# Otherwise, do nothing -- KeepassX will handle the key press.
+mode "pass-through" {
+    bindsym $mod+t mode "default"
+}
+bindsym $mod+apostrophe exec --no-startup-id ~/.local/bin/keepassx
+# bindsym $mod+apostrophe exec --no-startup-id keepassxc
+
+
+# i3bar
+# =====
+bar {
+    status_command py3status -b -n 1
+    font pango:sans,FontAwesome 10
+    position top
+    strip_workspace_numbers yes
+    tray_output HDMI-0
+    tray_output HDMI-1
+    tray_output primary
+    mode hide
+    colors {
+        background #1d2021
+        statusline #ebdbb2
+        separator #3c3836
+        focused_workspace #3c3836  #3c3836 #fbf1c7
+        active_workspace #3c3836   #3c3836 #fbf1c7
+        inactive_workspace #1d2021 #1d2021 #ebdbb2
+        urgent_workspace #cc241d #cc241d  #fbf1c7
+    }
+}
+
+# Workspace assignments
+# =====================
+for_window [class="^firefox$"] move --no-auto-back-and-forth container to workspace $web
+assign [class="^Chromium$"] $web
+assign [class="^Google-chrome-unstable$"] $web
+assign [class="^weechat$"] $chat
+assign [class="^discord$"] $chat
+assign [class="^chrome-netflix$"] $media
+assign [class="^qtwebflix$"] $media
+assign [class="^jellyfin$"] $media
+assign [class="^mpv$"] $media
+assign [class="^Steam$"] $steam
+assign [title="^Steam$"] $steam
+assign [class="^jetbrains-idea-ce$"] $code
+assign [class="^jetbrains-studio$"] $code
+assign [class="^jetbrains-clion$"] $code
+assign [class="^Unity$"] $code
+assign [class="^neomutt$"] $mail
+assign [class="^Qemu-system-x86_64$"] $vm
+assign [class="^Remote-viewer$"] $vm
+assign [title="^Android Emulator - .*$"] $vm
+assign [title="^Emulator$"] $vm
+assign [class="^VirtualBox Manager$"] $vm
+assign [class="^VirtualBox Machine$"] $vm
+assign [class="^MComix$"] $books
+assign [class="^zoom$"] $chat
+
+# Floating windows
+# =================
+for_window [title="^Starting Unity...$"] floating enable
+for_window [title="^Preparing Package$"] floating enable
+for_window [title="^Importing Package$"] floating enable
+for_window [title="^Hold on$"] floating enable
+for_window [title="^Hold On$"] floating enable
+for_window [title="^Complete Installation$"] floating enable
+for_window [title="^Steam - News (.* of .*)$"] floating enable
+for_window [class="^KeePassXC$"] floating enable; move position center
+for_window [class="^Nm-connection-editor$"] floating enable
+for_window [title="^Android Emulator - .*$"] floating enable
+for_window [title="^Emulator$"] floating enable
+for_window [title="^About Mozilla Firefox$"] floating enable
+for_window [title="^Steam - Self Updater$"] floating enable
+for_window [title="^Steam Guard - Computer Authorization Required$"] floating enable
+for_window [title="^zoom$"] floating enable

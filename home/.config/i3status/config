@@ -1,0 +1,60 @@
+# i3status configuration file.
+
+general {
+    colors = true
+    color_good = "#b8bb26"
+    color_degraded = "#f88019"
+    color_bad = "#fb4934"
+}
+
+order += "wireless wlp4s0"
+order += "backlight"
+order += "battery_level"
+order += "volume master"
+order += "cpu_temperature 0"
+order += "sysdata 0"
+order += "sysdata 1"
+order += "tztime local"
+
+wireless wlp4s0 {
+    format_up = " %essid"
+    format_down = ""
+}
+
+battery_level {
+    blocks = ""
+    format = "{icon} {percent}%"
+    notify_low_level = True
+}
+
+volume master {
+    format = " %volume"
+    format_muted = ""
+    device = "default"
+    mixer = "Master"
+}
+
+tztime local {
+    format = " %d-%m-%Y  %H:%M"
+}
+
+cpu_temperature 0 {
+    format = " %degrees°"
+    max_threshold = 75
+}
+
+backlight {
+    format = " {level}%"
+    button_down = 0
+    button_up = 0
+}
+
+sysdata 0 {
+    format = "[\?color=mem  {mem_used_percent:.0f}%]"
+    thresholds = [(0, "neutral"), (40, "degraded"), (75, "bad")]
+}
+
+sysdata 1 {
+    format = "[\?color=cpu  {cpu_usage:.0f}%]"
+    thresholds = [(0, "neutral"), (40, "degraded"), (75, "bad")]
+}

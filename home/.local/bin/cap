@@ -1,0 +1,36 @@
+#!/usr/bin/env zsh
+
+upload() {
+    url=$(curl -sF file=@$@ 'https://0x0.st')
+    rm $@
+    if [[ -n $url ]]; then
+        notify-send "Screenshot uploaded" "$url"
+    else
+        notify-send "Screenshot upload failed"
+    fi
+    printf $url | xsel -l /dev/null -b
+}
+
+choices="1 fullscreen
+2 partial
+3 upload fullscreen
+4 upload partial
+5 copy fullscreen
+6 copy partial"
+
+choice=$(rofi -dmenu -p "" <<< "$choices")
+filename=~/$(date +%F-%T).png
+sleep 1
+
+case $choice in
+    1*|3*)
+        maim --hidecursor $filename
+        if [[ $choice = 3* ]]; then upload $filename; fi;;
+    2*|4*)
+        maim --hidecursor --nokeyboard -s $filename
+        if [[ $choice = 4* ]]; then upload $filename; fi;;
+    5*)
+        maim --hidecursor | xclip -selection clipboard -t image/png;;
+    6*)
+        maim --hidecursor --nokeyboard -s | xclip -selection clipboard -t image/png;;
+esac

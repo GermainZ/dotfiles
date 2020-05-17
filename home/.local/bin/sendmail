@@ -1,0 +1,19 @@
+#!/bin/bash
+
+tmp=$(mktemp /tmp/sendmail.XXXXXX)
+cat >$tmp
+from=$(echo $@ | cut -d' ' -f2)
+to=$(echo $@ | cut -d' ' -f4)
+/usr/bin/msmtp "$@" <$tmp 2>&1
+exit_code=$?
+if (($exit_code)); then 
+    notify-send -u critical "Error sending mail" "To: $to\nExit code $exit_code"
+    exit $exit_code
+else
+    if [[ $from == "germain.zouein@lau.edu" ]]; then
+        notmuch insert --folder=germainzouein-lau/Sent/ -unread <$tmp
+    elif [[ $from == "germain.zouein@epfl.ch" ]]; then
+        notmuch insert --folder=germainzouein-epfl/Sent/ -unread <$tmp
+    fi
+fi 
+

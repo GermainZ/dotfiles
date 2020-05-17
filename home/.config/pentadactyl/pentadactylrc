@@ -1,0 +1,43 @@
+" Init
+" ====
+loadplugins '\.(js)$'
+group user
+
+" Display
+" =======
+colorscheme gruvbox
+hi FontFixed -a font: 10pt "monospace" !important;
+
+" Key bindings
+" ============
+map -count -modes=n,v,c,i,t <C-c> <count><Pass>
+map -count -modes=n,v,c,i,t <C-a> <count><Pass>
+map -count -modes=c,i,t <C-v> <Pass>
+map -modes=n,v,c,i,t <A-b> <Pass>
+
+" Hints
+" =====
+set hintkeys=fdsartgbvecwxqyiopmnhzuljk
+set hinttimeout=1000
+highlight -a Hint text-transform:uppercase;font:monospace;font-weight:bold;font-size:1em;background:#1d2021;color:#ebdbb2!important;
+highlight -a HintActive background:#3c3836!important;color:#fbf1c7!important;
+
+" Other
+" =====
+set defsearch=google
+js editor.defaultRegister="+"
+set editor='termite -e "vim +<line> +\"sil! call cursor(0, <column>)\" <file>"'
+set passkeys+='slack.com':<Ctrl>/,<Enter>,<Ctrl>k,<Alt><Up>,<Alt><Down>,<Alt><Shift><Up>,<Alt><Shift><Down>,<Alt><Right>,<Alt><Left>,<Esc>
+style -name ublock-umatrix * #nav-bar * { visibility: visible; }
+
+" Website specific changes
+" ========================
+highlight XKCDTitle text-align: center; margin-top: .5em;
+js highlight.get("XKCDTitle").sites = "*"; // Hack.
+
+au! DOMLoad 'xkcd.com' -js
+  \ Array.forEach(doc.querySelectorAll("img[title]"), function (img) {
+  \     let div = DOM.fromJSON(["div", {}, ["div", { highlight: "XKCDTitle" }, img.title]], doc);
+  \     img.parentNode.replaceChild(div, img);
+  \     div.insertBefore(img, div.firstChild);
+  \ }) 

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ ! -f ~/.cache/.notmuch-notify ]; then
+    last_check_time=0
+else
+    last_check_time=$(cat ~/.cache/.notmuch-notify)
+fi
+
+count="$(notmuch count tag:unread date:@"$last_check_time"..today)"
+if [ "$count" -eq 0 ]; then
+    exit 0
+fi
+
+body="$(notmuch search --sort=newest-first --format=json tag:unread date:@"$last_check_time"..today | jq -r '.[] | "<b>" + (if (.authors | length) > 30 then .authors[0:29] + "…" else .authors end) + "</b>\n" + (if (.subject | length) > 62 then .subject[0:61] + "…" else .subject end)')"
+DISPLAY=:0 notify-send "New mail" "$body"
+
+date +%s > ~/.cache/.notmuch-notify

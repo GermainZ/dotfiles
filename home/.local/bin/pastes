@@ -1,0 +1,94 @@
+#!/usr/bin/env python
+#
+# Quick pastes using rofi.
+# License: WTFPL.
+#
+
+from collections import OrderedDict
+import os
+from random import randrange
+from subprocess import Popen, PIPE
+import time
+
+import yaml
+
+
+# pastes.yaml example format:
+#     Normal:
+#         Key: value
+#     Messages:
+#         Greetings:
+#             - Greeting
+#             - Greeting 2
+#         Farewells:
+#             - Farewell 1
+#             - Farewell 2
+#         Signature: value
+#         Contents:
+#             Key: value
+#             Key 2: value 2
+# "Normal" pastes will get pasted directly. For "Messages" pastes, a greeting,
+# farewell and signature will be added to the content.
+
+# Load yaml mappnigs as an OrderedDict.
+# From <http://stackoverflow.com/a/21048064/1460652>.
+_mapping_tag = yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG
+
+def dict_representer(dumper, data):
+    return dumper.represent_dict(data.iteritems())
+
+def dict_constructor(loader, node):
+    return OrderedDict(loader.construct_pairs(node))
+
+yaml.add_representer(OrderedDict, dict_representer)
+yaml.add_constructor(_mapping_tag, dict_constructor)
+
+# Load pastes.
+pastes_path = os.path.expandvars("$XDG_CONFIG_HOME/pastes/pastes.yaml")
+with open(pastes_path) as pastes_f:
+    pastes = yaml.load(pastes_f)
+
+# Call rofi with the list of pastes.
+items = '\n'.join(pastes['Normal'].keys()) + '\n'
+items += '\n'.join(pastes['Messages']['Contents'].keys()) + '\n'
+rofi_proc = Popen(["rofi", "-dmenu", "-i"], stdout=PIPE, stdin=PIPE)
+selection = str.strip(rofi_proc.communicate(items.encode())[0].decode())
+
+# Generate the paste.
+if selection in pastes['Normal']:
+    paste = pastes['Normal'][selection].encode()
+else:
+    messages = pastes['Messages']
+    paste = (messages['Greetings'][randrange(len(messages['Greetings']))] +
+             '\n\n')
+    paste += messages['Contents'][selection] + '\n'
+    paste += (messages['Farewells'][randrange(len(messages['Farewells']))] +
+              '\n')
+    paste += messages['Signature']
+    paste = paste.encode()
+
+# Get clipboard.
+xclip_proc = Popen(["xclip", "-selection", "clipboard", "-o"], stdout=PIPE)
+old_clipboard = xclip_proc.communicate(paste)[0]
+
+# Place selected item into the clipboard.
+xclip_proc = Popen(["xclip", "-selection", "clipboard"], stdin=PIPE)
+xclip_proc.communicate(paste)
+
+# Determite if we should press ctrl+v or ctrl+shift+v, depending on whether
+# the focused window is our terminal or not.
+xprop_proc = Popen(("xprop -id $(xdotool getactivewindow) | grep ^WM_CLASS | "
+                    "cut -d'\"' -f2"), shell=True, stdout=PIPE)
+active_window_class = str.strip(xprop_proc.communicate(paste)[0].decode())
+if active_window_class == "termite":
+    key_sequence = "ctrl+shift+v"
+else:
+    key_sequence = "ctrl+v"
+
+# Paste clipboard.
+Popen(["xdotool", "key", "--clearmodifiers", key_sequence])
+time.sleep(.1)
+
+# Restore clipboard.
+xclip_proc = Popen(["xclip", "-selection", "clipboard"], stdin=PIPE)
+xclip_proc.communicate(old_clipboard)

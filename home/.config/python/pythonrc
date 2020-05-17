@@ -1,0 +1,40 @@
+# $PYTHONSTARTUP - Python interactive startup script
+# vim: ft=python fileencoding=utf-8
+
+
+import os
+import sys
+
+
+def __init__():
+    # Import these here so we don't pollute the global namespace with unneeded
+    # imports.
+    import atexit
+    import readline
+
+    # History
+    # =======
+
+    history_file = os.path.expandvars("$XDG_CACHE_HOME/.python_history")
+
+    if os.path.exists(history_file):
+        readline.read_history_file(history_file)
+
+    atexit.register(readline.write_history_file, history_file)
+
+    # Prompts
+    # =======
+
+    color_seq = "\001\033[{}m\002"
+    name = "py%d.%d " % sys.version_info[0:2]
+    blue_bg = color_seq.format("40;48;5;4")
+    blue_fg = color_seq.format("0;38;5;4")
+    sys.ps1 = "{blue_bg} {name}{blue_fg} {reset}".format(
+        blue_bg=blue_bg, name=name, blue_fg=blue_fg,
+        reset=color_seq.format(""))
+    sys.ps2 = "{spaces}{color}...{reset} ".format(
+        spaces=" " * len(name), color=color_seq.format(";1;30"),
+        reset=color_seq.format(""))
+
+
+__init__()

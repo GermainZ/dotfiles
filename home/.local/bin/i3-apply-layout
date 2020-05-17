@@ -1,0 +1,56 @@
+#!/usr/bin/env zsh
+# A script for i3wm to apply a layout on a workspace (swallowing matching
+# existing clients as well).
+# Adapted from: http://article.gmane.org/gmane.comp.window-managers.i3.general/2008
+#
+# Syntax:
+#   i3-apply-layout workspace /path/to/layout.json
+
+if [[ $# != 2 || -z $1 || ! -f $2 ]]; then
+    [[ -z $1 ]] && printf "Error: workspace not specified.\n"
+    [[ ! -f $2 ]] && printf "Error: layout file not found.\n"
+    printf "Syntax:\n\t${0##*/} 'workspace' /path/to/layout.json\n"
+    exit 1
+fi
+
+# A lock file is used to avoid an infinite loop if this script is used with the
+# for_window trigger, as it would get triggered every time the matching client
+# is remapped (which happens every time this script is called, resulting in it
+# getting called again).
+[[ -e /tmp/i3-apply-layout.lock ]] && exit || touch /tmp/i3-apply-layout.lock
+
+# Switch to the workspace first.
+i3-msg "workspace --no-auto-back-and-forth $1"
+
+# Get IDs of windows to remap.
+ids=(${(f)"$(xdotool search --onlyvisible '')"})
+
+# Find and remove IDs of i3 windows (root window, i3bar, etc).
+ids_ignore=(${(f)"$(xdotool search --onlyvisible --class '(i3-frame|i3bar)')"})
+ids_ignore=($ids_ignore ${(f)"$(xdotool search --onlyvisible --class '^$')"})
+ids_ignore=($ids_ignore ${(f)"$(xdotool search --onlyvisible --class '^NetworkManager Applet$')"})
+
+for id in ${ids_ignore[@]}
+do
+    ids=("${(@)ids:#$id}")
+done
+
+for id in ${ids[@]}
+do
+    xdotool windowfocus $id
+    i3-msg 'mark layout-applied'
+done
+
+# Apply the layout.
+i3-msg "append_layout $2"
+
+# Unmap and remap all remaining visible windows so that they're picked up by
+# i3.
+for id in ${ids[@]}
+do
+    xdotool windowunmap $id
+    xdotool windowmap $id
+done
+
+notify-send -a i3 -t 1000 "Layout applied"
+rm /tmp/i3-apply-layout.lock

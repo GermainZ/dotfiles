@@ -1,0 +1,10 @@
+if [[ "$(xdotool search --class keepassxc)" ]]; then
+    i3-msg 'mode pass-through'
+    xdotool key super+apostrophe
+    i3-msg 'mode default'
+else
+    i3-msg 'mode pass-through'
+    /usr/bin/keepassxc &
+    xdotool search --sync --onlyvisible --class "keepassxc"
+    i3-msg 'mode default'
+fi
